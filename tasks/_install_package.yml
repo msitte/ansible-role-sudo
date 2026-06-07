@@ -12,6 +12,7 @@
   tags:
     - sudo
     - sudo_package
+    - xccdf_org.ssgproject.content_rule_package_sudo_installed
 
 - name: Install sudo packages
   become: true

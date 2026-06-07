@@ -21,6 +21,14 @@ rules, and validation through `visudo`.
 - Ansible Core 2.18 or later
 - Privilege escalation for package and sudoers management
 
+## Reference
+
+Relevant manual pages:
+
+- `sudo(8)`
+- `sudoers(5)`
+- `visudo(8)`
+
 ## Role Variables
 
 Primary control variables:
@@ -36,7 +44,7 @@ sudo__manage_ansible_user: true
 Policy variables:
 
 ```yaml
-sudo__enable_logging: false
+sudo__enable_logging: true
 sudo__logfile_path: /var/log/sudo.log
 sudo__sudoer_config: []
 sudo__timestamp_timeout: 15
@@ -70,7 +78,7 @@ The default baseline follows common OpenSCAP Security Guide sudo controls,
 including:
 
 - enabling `Defaults use_pty`
-- optionally configuring a dedicated sudo logfile
+- configuring a dedicated sudo logfile
 - removing `!authenticate` and `NOPASSWD` from unmanaged sudoers include files
 - centralizing `timestamp_timeout` in `/etc/sudoers`
 - validating all sudoers changes with `visudo`

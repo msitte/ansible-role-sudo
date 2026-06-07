@@ -29,6 +29,7 @@
   tags:
     - sudo
     - sudo_config
+    - xccdf_org.ssgproject.content_rule_sudo_add_use_pty
 
 - name: Configure sudo logfile option
   become: true
@@ -44,6 +45,7 @@
   tags:
     - sudo
     - sudo_config
+    - xccdf_org.ssgproject.content_rule_sudo_custom_logfile
 
 - name: Define sudoers entries managed by role
   ansible.builtin.set_fact:
@@ -140,6 +142,7 @@
   tags:
     - sudo
     - sudo_config
+    - xccdf_org.ssgproject.content_rule_sudo_remove_no_authenticate
 
 - name: Remove NOPASSWD from unmanaged sudoers include files
   become: true
@@ -185,6 +188,7 @@
   tags:
     - sudo
     - sudo_config
+    - xccdf_org.ssgproject.content_rule_sudo_require_reauthentication
 
 - name: Configure sudo timestamp timeout
   become: true
@@ -199,3 +203,4 @@
   tags:
     - sudo
     - sudo_config
+    - xccdf_org.ssgproject.content_rule_sudo_require_reauthentication

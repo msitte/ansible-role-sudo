@@ -3,24 +3,26 @@
 #
 # SPDX-License-Identifier: MIT
 
+# ComplianceAsCode:
+# - xccdf_org.ssgproject.content_rule_package_sudo_installed
 sudo__manage_package: true
 sudo__manage_config: true
 sudo__package_state: present
 sudo__validate_config: true
 
-# Preserve access for the Ansible connection user while hardening sudoers.d.
 sudo__manage_ansible_user: true
 sudo__ansible_user_rule_name: allow-ansible-unrestricted
 
-# Enables sudo logging via file.
-sudo__enable_logging: false
+# ComplianceAsCode:
+# - xccdf_org.ssgproject.content_rule_sudo_custom_logfile
+sudo__enable_logging: true
 
-# The location of the sudo log file.
+# ComplianceAsCode:
+# - xccdf_org.ssgproject.content_rule_sudo_custom_logfile
 sudo__logfile_path: /var/log/sudo.log
 
-# List of sudoers configuration entries managed through community.general.sudoers.
 sudo__sudoer_config: []
 
-# The time, in minutes, before sudo asks for a password again. Use 0 to always
-# prompt. Negative values keep the timestamp valid until reboot.
+# ComplianceAsCode:
+# - xccdf_org.ssgproject.content_rule_sudo_require_reauthentication
 sudo__timestamp_timeout: 15
