@@ -10,8 +10,8 @@ OpenSCAP Security Guide aligned sudo configuration for recent Ubuntu LTS and Deb
 
 The role targets:
 
-- Ubuntu 24.04 LTS and later
-- Debian 12 and later
+- Ubuntu 24.04 LTS and 26.04 LTS
+- Debian 12 and 13
 
 It manages sudo package installation, `/etc/sudoers` defaults, sudoers include
 rules, and validation through `visudo`.

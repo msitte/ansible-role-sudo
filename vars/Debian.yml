@@ -9,6 +9,7 @@ _sudo__supported_distributions:
     - "13"
   Ubuntu:
     - "24"
+    - "26"
 
 _sudo__packages:
   - sudo
