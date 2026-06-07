@@ -1,0 +1,29 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Assert sudo supports OS family
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['os_family'] in _sudo__supported_os_families
+    fail_msg: >-
+      sudo supports these OS families: {{ _sudo__supported_os_families | join(', ') }}.
+      Current OS family: {{ ansible_facts['os_family'] }}.
+  tags:
+    - sudo
+    - sudo_validate
+    - sudo_preflight
+
+- name: Assert sudo supports distribution version
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['distribution'] in _sudo__supported_distributions
+      - ansible_facts['distribution_major_version'] in _sudo__supported_distributions[ansible_facts['distribution']]
+    fail_msg: >-
+      sudo supports {{ _sudo__supported_distributions }}.
+      Current platform: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}.
+  tags:
+    - sudo
+    - sudo_validate
+    - sudo_preflight

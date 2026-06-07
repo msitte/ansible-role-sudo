@@ -1,0 +1,12 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Configure sudo files
+  ansible.builtin.import_tasks:
+    file: _configure_files.yml
+  when: sudo__manage_config | bool
+  tags:
+    - sudo
+    - sudo_config

@@ -1,0 +1,14 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Validate sudo configuration
+  ansible.builtin.import_tasks:
+    file: _validate_config.yml
+  when:
+    - sudo__validate_config | bool
+    - not ansible_check_mode
+  tags:
+    - sudo
+    - sudo_validate

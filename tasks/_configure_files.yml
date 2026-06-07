@@ -1,0 +1,201 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Ensure sudoers include directory exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ _sudo__sudoers_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+  register: _sudo__sudoers_config_dir_result
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Enable sudo use_pty option
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ _sudo__sudoers_file }}"
+    create: false
+    regexp: "^\\s*Defaults\\b.*\\buse_pty\\b.*$"
+    line: "Defaults use_pty"
+    insertbefore: "^@includedir\\s+{{ _sudo__sudoers_config_dir | regex_escape() }}\\s*$"
+    validate: "{{ _sudo__visudo_validate }}"
+  register: _sudo__use_pty_result
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Configure sudo logfile option
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ _sudo__sudoers_file }}"
+    create: false
+    regexp: "^\\s*Defaults\\b.*\\blogfile\\s*=.*$"
+    line: "Defaults logfile={{ sudo__logfile_path }}"
+    insertbefore: "^@includedir\\s+{{ _sudo__sudoers_config_dir | regex_escape() }}\\s*$"
+    validate: "{{ _sudo__visudo_validate }}"
+  register: _sudo__logfile_result
+  when: sudo__enable_logging | bool
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Define sudoers entries managed by role
+  ansible.builtin.set_fact:
+    _sudo__effective_sudoer_config: >-
+      {{
+        sudo__sudoer_config
+        + (
+          [{
+            'name': sudo__ansible_user_rule_name,
+            'user': ansible_user,
+            'runas': 'ALL',
+            'host': 'ALL',
+            'commands': 'ALL',
+            'nopassword': true,
+            'state': 'present'
+          }]
+          if sudo__manage_ansible_user | bool
+          else []
+        )
+      }}
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Configure sudoers entries
+  become: true
+  ansible.builtin.template:
+    src: sudoers_rule.j2
+    dest: "{{ [_sudo__sudoers_config_dir, item['name']] | path_join }}"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: "{{ _sudo__visudo_validate }}"
+  loop: "{{ _sudo__effective_sudoer_config }}"
+  loop_control:
+    label: "{{ item['name'] }}"
+  register: _sudo__sudoers_result
+  when: item['state'] | default('present') == 'present'
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Remove absent sudoers entries
+  become: true
+  ansible.builtin.file:
+    path: "{{ [_sudo__sudoers_config_dir, item['name']] | path_join }}"
+    state: absent
+  loop: "{{ _sudo__effective_sudoer_config }}"
+  loop_control:
+    label: "{{ item['name'] }}"
+  register: _sudo__absent_sudoers_result
+  when: item['state'] | default('present') == 'absent'
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Find sudoers include files
+  become: true
+  ansible.builtin.find:
+    paths:
+      - "{{ _sudo__sudoers_config_dir }}"
+    patterns:
+      - "*"
+    file_type: file
+  register: _sudo__sudoers_include_files
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Build sudoers include remediation skip list
+  ansible.builtin.set_fact:
+    _sudo__managed_sudoers_files: >-
+      {{
+        _sudo__effective_sudoer_config
+        | map(attribute='name')
+        | map('regex_replace', '^', _sudo__sudoers_config_dir ~ '/')
+        | list
+      }}
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Remove !authenticate from unmanaged sudoers include files
+  become: true
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: "(^(?!#).*\\s+!authenticate.*$)"
+    replace: "# \\g<1>"
+    validate: "{{ _sudo__visudo_validate }}"
+  loop: "{{ _sudo__sudoers_include_files['files'] | map(attribute='path') | difference(_sudo__managed_sudoers_files) }}"
+  loop_control:
+    label: "{{ item }}"
+  register: _sudo__remove_no_authenticate_result
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Remove NOPASSWD from unmanaged sudoers include files
+  become: true
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: "(^(?!#).*\\s+NOPASSWD\\s*:.*$)"
+    replace: "# \\g<1>"
+    validate: "{{ _sudo__visudo_validate }}"
+  loop: "{{ _sudo__sudoers_include_files['files'] | map(attribute='path') | difference(_sudo__managed_sudoers_files) }}"
+  loop_control:
+    label: "{{ item }}"
+  register: _sudo__remove_nopasswd_result
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Find sudoers include files with timestamp timeout defaults
+  become: true
+  ansible.builtin.find:
+    paths:
+      - "{{ _sudo__sudoers_config_dir }}"
+    patterns:
+      - "*"
+    file_type: file
+    contains: "^\\s*Defaults\\b.*\\btimestamp_timeout\\s*=.*$"
+  register: _sudo__timestamp_timeout_include_files
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Remove timestamp timeout defaults from sudoers include files
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ item }}"
+    create: false
+    regexp: "^\\s*Defaults\\b.*\\btimestamp_timeout\\s*=.*$"
+    state: absent
+    validate: "{{ _sudo__visudo_validate }}"
+  loop: "{{ _sudo__timestamp_timeout_include_files['files'] | map(attribute='path') }}"
+  loop_control:
+    label: "{{ item }}"
+  register: _sudo__remove_timestamp_timeout_result
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Configure sudo timestamp timeout
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ _sudo__sudoers_file }}"
+    create: false
+    regexp: "^\\s*Defaults\\b.*\\btimestamp_timeout\\s*=.*$"
+    line: "Defaults timestamp_timeout={{ sudo__timestamp_timeout }}"
+    insertbefore: "^@includedir\\s+{{ _sudo__sudoers_config_dir | regex_escape() }}\\s*$"
+    validate: "{{ _sudo__visudo_validate }}"
+  register: _sudo__timestamp_timeout_result
+  tags:
+    - sudo
+    - sudo_config

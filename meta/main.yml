@@ -1,0 +1,27 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+galaxy_info:
+  author: Matthias Sitte
+  namespace: msitte
+  role_name: sudo
+  description: OpenSCAP-aligned sudo configuration for Debian and Ubuntu.
+  license: MIT
+  min_ansible_version: "2.18"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+        - trixie
+    - name: Ubuntu
+      versions:
+        - noble
+  galaxy_tags:
+    - hardening
+    - openscap
+    - security
+    - sudo
+
+dependencies: []

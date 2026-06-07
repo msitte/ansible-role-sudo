@@ -1,0 +1,12 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Install sudo packages
+  ansible.builtin.import_tasks:
+    file: _install_package.yml
+  when: sudo__manage_package | bool
+  tags:
+    - sudo
+    - sudo_package

@@ -1,0 +1,17 @@
+{#
+SPDX-FileCopyrightText: 2026 Matthias Sitte
+
+SPDX-License-Identifier: MIT
+#}
+{% set sudoers_subject = item['user'] | default('%' ~ item['group']) %}
+{% set sudoers_tags = [] %}
+{% if item['nopassword'] | default(true) | bool %}
+{%   set _ = sudoers_tags.append('NOPASSWD') %}
+{% endif %}
+{% if item['noexec'] | default(false) | bool %}
+{%   set _ = sudoers_tags.append('NOEXEC') %}
+{% endif %}
+{% if item['setenv'] | default(false) | bool %}
+{%   set _ = sudoers_tags.append('SETENV') %}
+{% endif %}
+{{ sudoers_subject }} {{ item['host'] | default('ALL') }}=({{ item['runas'] | default('ALL') }}) {% if sudoers_tags | length > 0 %}{{ sudoers_tags | join(': ') }}: {% endif %}{% if item['commands'] is defined and item['commands'] is sequence and item['commands'] is not string %}{{ item['commands'] | join(', ') }}{% else %}{{ item['commands'] | default('ALL') }}{% endif %}

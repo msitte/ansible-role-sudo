@@ -1,0 +1,28 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Load OS family specific sudo variables
+  ansible.builtin.import_tasks:
+    file: _load_vars.yml
+  tags:
+    - sudo
+    - sudo_vars
+    - sudo_preflight
+
+- name: Validate sudo platform support
+  ansible.builtin.import_tasks:
+    file: _assert_supported_platform.yml
+  tags:
+    - sudo
+    - sudo_validate
+    - sudo_preflight
+
+- name: Validate sudo role variables
+  ansible.builtin.import_tasks:
+    file: _assert_role_variables.yml
+  tags:
+    - sudo
+    - sudo_validate
+    - sudo_preflight

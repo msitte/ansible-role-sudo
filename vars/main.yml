@@ -1,0 +1,7 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+_sudo__supported_os_families:
+  - Debian

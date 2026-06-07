@@ -1,0 +1,46 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Validate sudoers syntax
+      ansible.builtin.command:
+        cmd: /usr/sbin/visudo -c
+      changed_when: false
+
+    - name: Read sudoers file
+      ansible.builtin.slurp:
+        src: /etc/sudoers
+      register: _sudo__verify_sudoers
+
+    - name: Read demo sudoers include
+      ansible.builtin.slurp:
+        src: /etc/sudoers.d/allow-demo-restricted-less
+      register: _sudo__verify_demo_sudoers
+
+    - name: Read ansible user sudoers include
+      ansible.builtin.slurp:
+        src: /etc/sudoers.d/allow-ansible-unrestricted
+      register: _sudo__verify_ansible_sudoers
+
+    - name: Decode sudo configs
+      ansible.builtin.set_fact:
+        _sudo__sudoers_content: "{{ _sudo__verify_sudoers['content'] | b64decode }}"
+        _sudo__demo_sudoers_content: "{{ _sudo__verify_demo_sudoers['content'] | b64decode }}"
+        _sudo__ansible_sudoers_content: "{{ _sudo__verify_ansible_sudoers['content'] | b64decode }}"
+
+    - name: Assert sudo hardening settings are rendered
+      ansible.builtin.assert:
+        that:
+          - "'Defaults use_pty' in _sudo__sudoers_content"
+          - "'Defaults logfile=/var/log/sudo.log' in _sudo__sudoers_content"
+          - "'Defaults timestamp_timeout=5' in _sudo__sudoers_content"
+          - "'demo' in _sudo__demo_sudoers_content"
+          - "'NOEXEC' in _sudo__demo_sudoers_content"
+          - "'NOPASSWD' not in _sudo__demo_sudoers_content"
+          - "'ALL' in _sudo__ansible_sudoers_content"
+          - "'NOPASSWD' in _sudo__ansible_sudoers_content"

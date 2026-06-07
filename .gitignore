@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+.ansible/
+.cache/
+.molecule/
+.pytest_cache/
+.uv-cache/
+.venv/
+__pycache__/

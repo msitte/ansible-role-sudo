@@ -1,0 +1,19 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+_sudo__supported_distributions:
+  Debian:
+    - "12"
+    - "13"
+  Ubuntu:
+    - "24"
+
+_sudo__packages:
+  - sudo
+
+_sudo__sudoers_file: /etc/sudoers
+_sudo__sudoers_config_dir: /etc/sudoers.d
+_sudo__visudo_binary: /usr/sbin/visudo
+_sudo__visudo_validate: "{{ _sudo__visudo_binary }} -cf %s"

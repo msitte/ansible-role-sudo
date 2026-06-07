@@ -1,0 +1,7 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+collections:
+  - name: containers.podman

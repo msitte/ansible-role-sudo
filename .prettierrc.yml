@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+printWidth: 120
+proseWrap: preserve
+singleQuote: false
+trailingComma: none

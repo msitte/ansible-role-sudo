@@ -1,0 +1,13 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Uninstall sudo packages
+  become: true
+  ansible.builtin.package:
+    name: "{{ _sudo__packages }}"
+    state: absent
+  tags:
+    - sudo
+    - sudo_uninstall

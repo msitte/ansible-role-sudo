@@ -1,0 +1,12 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Load sudo OS family variables
+  ansible.builtin.include_vars:
+    file: "{{ ansible_facts['os_family'] }}.yml"
+  tags:
+    - sudo
+    - sudo_vars
+    - sudo_preflight

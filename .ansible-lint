@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+profile: production
+exclude_paths:
+  - .ansible/
+  - .cache/
+  - .molecule/
+  - .uv-cache/
+  - .venv/
+
+skip_list:
+  - yaml[line-length]

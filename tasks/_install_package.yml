@@ -1,0 +1,23 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Update apt package cache for sudo
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 86400
+  when: ansible_facts['pkg_mgr'] == 'apt'
+  tags:
+    - sudo
+    - sudo_package
+
+- name: Install sudo packages
+  become: true
+  ansible.builtin.package:
+    name: "{{ _sudo__packages }}"
+    state: "{{ sudo__package_state }}"
+  tags:
+    - sudo
+    - sudo_package

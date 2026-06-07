@@ -1,0 +1,26 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+sudo__manage_package: true
+sudo__manage_config: true
+sudo__package_state: present
+sudo__validate_config: true
+
+# Preserve access for the Ansible connection user while hardening sudoers.d.
+sudo__manage_ansible_user: true
+sudo__ansible_user_rule_name: allow-ansible-unrestricted
+
+# Enables sudo logging via file.
+sudo__enable_logging: false
+
+# The location of the sudo log file.
+sudo__logfile_path: /var/log/sudo.log
+
+# List of sudoers configuration entries managed through community.general.sudoers.
+sudo__sudoer_config: []
+
+# The time, in minutes, before sudo asks for a password again. Use 0 to always
+# prompt. Negative values keep the timestamp valid until reboot.
+sudo__timestamp_timeout: 15

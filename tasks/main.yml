@@ -1,0 +1,43 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Run sudo preflight checks
+  ansible.builtin.import_tasks:
+    file: preflight.yml
+  tags:
+    - sudo
+    - sudo_preflight
+
+- name: Install sudo
+  ansible.builtin.import_tasks:
+    file: install.yml
+  when: sudo__package_state != 'absent'
+  tags:
+    - sudo
+    - sudo_package
+
+- name: Configure sudo
+  ansible.builtin.import_tasks:
+    file: configure.yml
+  when: sudo__package_state != 'absent'
+  tags:
+    - sudo
+    - sudo_config
+
+- name: Validate sudo
+  ansible.builtin.import_tasks:
+    file: validate.yml
+  when: sudo__package_state != 'absent'
+  tags:
+    - sudo
+    - sudo_validate
+
+- name: Uninstall sudo
+  ansible.builtin.import_tasks:
+    file: uninstall.yml
+  when: sudo__package_state == 'absent'
+  tags:
+    - sudo
+    - sudo_uninstall

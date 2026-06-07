@@ -1,0 +1,22 @@
+---
+# SPDX-FileCopyrightText: 2026 Matthias Sitte
+#
+# SPDX-License-Identifier: MIT
+
+- name: Converge
+  hosts: all
+  become: true
+  roles:
+    - role: sudo
+      vars:
+        sudo__enable_logging: true
+        sudo__logfile_path: /var/log/sudo.log
+        sudo__timestamp_timeout: 5
+        sudo__sudoer_config:
+          - name: allow-demo-restricted-less
+            user: demo
+            commands:
+              - /usr/bin/less
+            noexec: true
+            nopassword: false
+            state: present
