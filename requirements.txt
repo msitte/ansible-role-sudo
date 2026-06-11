@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 ansible-core>=2.18,<2.20
-ansible-lint>=25.0.0
+ansible-lint>=26.4.0,<27.0.0
 yamllint>=1.35.0
 molecule>=25.0.0
 molecule-plugins[podman]>=23.0.0
