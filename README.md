@@ -13,8 +13,7 @@ The role targets:
 - Ubuntu 24.04 LTS and 26.04 LTS
 - Debian 12 and 13
 
-It manages sudo package installation, `/etc/sudoers` defaults, sudoers include
-rules, and validation through `visudo`.
+It manages sudo package installation, `/etc/sudoers` defaults, sudoers include rules, and validation through `visudo`.
 
 ## Requirements
 
@@ -50,9 +49,8 @@ sudo__sudoer_config: []
 sudo__timestamp_timeout: 15
 ```
 
-Variables prefixed with `_sudo__` are private implementation details. They are
-loaded dynamically from OS-family specific files such as `vars/Debian.yml` and
-should not be set from inventory.
+Variables prefixed with `_sudo__` are private implementation details. They are loaded dynamically from OS-family
+specific files such as `vars/Debian.yml` and should not be set from inventory.
 
 Use `sudo__sudoer_config` for sudoers include entries:
 
@@ -67,15 +65,13 @@ sudo__sudoer_config:
     state: present
 ```
 
-By default, the role also creates an unrestricted sudoers entry for the Ansible
-connection user so hardening unmanaged include files does not lock out the
-automation account. Disable this with `sudo__manage_ansible_user: false` only
-when another role or baseline guarantees equivalent access.
+By default, the role also creates an unrestricted sudoers entry for the Ansible connection user so hardening unmanaged
+include files does not lock out the automation account. Disable this with `sudo__manage_ansible_user: false` only when
+another role or baseline guarantees equivalent access.
 
 ## Compliance Notes
 
-The default baseline follows common OpenSCAP Security Guide sudo controls,
-including:
+The default baseline follows common OpenSCAP Security Guide sudo controls, including:
 
 - enabling `Defaults use_pty`
 - configuring a dedicated sudo logfile
@@ -115,8 +111,8 @@ The role uses explicit task phases:
 - `validate.yml`
 - `uninstall.yml`
 
-Files named `tasks/_*.yml` are private implementation details for those phases
-and should not be called directly from playbooks.
+Files named `tasks/_*.yml` are private implementation details for those phases and should not be called directly from
+playbooks.
 
 ## Testing
 
