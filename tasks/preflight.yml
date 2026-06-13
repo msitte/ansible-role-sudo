@@ -17,6 +17,7 @@
         - sudo
         - sudo_vars
         - sudo_preflight
+
 - name: Validate sudo platform support
   tags:
     - sudo
@@ -29,8 +30,8 @@
         that:
           - ansible_facts['os_family'] in _sudo__supported_os_families
         fail_msg: >-
-          sudo supports these OS families: {{ _sudo__supported_os_families | join(', ') }}.
-          Current OS family: {{ ansible_facts['os_family'] }}.
+          sudo supports these OS families: {{ _sudo__supported_os_families | join(', ') }}. Current OS family: {{
+          ansible_facts['os_family'] }}.
       tags:
         - sudo
         - sudo_validate
@@ -42,12 +43,13 @@
           - ansible_facts['distribution'] in _sudo__supported_distributions
           - ansible_facts['distribution_major_version'] in _sudo__supported_distributions[ansible_facts['distribution']]
         fail_msg: >-
-          sudo supports {{ _sudo__supported_distributions }}.
-          Current platform: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}.
+          sudo supports {{ _sudo__supported_distributions }}. Current platform: {{ ansible_facts['distribution'] }} {{
+          ansible_facts['distribution_version'] }}.
       tags:
         - sudo
         - sudo_validate
         - sudo_preflight
+
 - name: Validate sudo role variables
   tags:
     - sudo
@@ -73,8 +75,8 @@
         that:
           - sudo__package_state in ['present', 'latest', 'absent']
         fail_msg: >-
-          sudo__package_state must be one of present, latest, absent.
-          This variable controls role branching before module-level validation.
+          sudo__package_state must be one of present, latest, absent. This variable controls role branching before
+          module-level validation.
       tags:
         - sudo
         - sudo_validate
@@ -89,8 +91,8 @@
           - sudo__logfile_path is match('^/')
           - sudo__timestamp_timeout is number
         fail_msg: >-
-          sudo__ansible_user_rule_name must be non-empty, sudo__logfile_path must be absolute,
-          and sudo__timestamp_timeout must be numeric.
+          sudo__ansible_user_rule_name must be non-empty, sudo__logfile_path must be absolute, and
+          sudo__timestamp_timeout must be numeric.
       tags:
         - sudo
         - sudo_validate
@@ -115,18 +117,20 @@
           - item['name'] is string
           - item['name'] | length > 0
           - item['state'] | default('present') in ['present', 'absent']
-          - item['state'] | default('present') == 'absent' or item['user'] is defined or item['group'] is defined
-          - item['user'] is not defined or item['user'] is string
-          - item['group'] is not defined or item['group'] is string
-          - item['runas'] is not defined or item['runas'] is string
-          - item['host'] is not defined or item['host'] is string
-          - item['commands'] is not defined or item['commands'] is string or item['commands'] is sequence
-          - item['noexec'] is not defined or item['noexec'] is boolean
-          - item['nopassword'] is not defined or item['nopassword'] is boolean
-          - item['setenv'] is not defined or item['setenv'] is boolean
+          - >-
+            (item['state'] | default('present') == 'absent') or (item['user'] is defined) or (item['group'] is defined)
+          - (item['user'] is not defined) or (item['user'] is string)
+          - (item['group'] is not defined) or (item['group'] is string)
+          - (item['runas'] is not defined) or (item['runas'] is string)
+          - (item['host'] is not defined) or (item['host'] is string)
+          - >-
+            (item['commands'] is not defined) or (item['commands'] is string) or (item['commands'] is sequence)
+          - (item['noexec'] is not defined) or (item['noexec'] is boolean)
+          - (item['nopassword'] is not defined) or (item['nopassword'] is boolean)
+          - (item['setenv'] is not defined) or (item['setenv'] is boolean)
         fail_msg: >-
-          Each sudo__sudoer_config entry must define a name and a valid sudoers rule.
-          Present entries must define user or group.
+          Each sudo__sudoer_config entry must define a name and a valid sudoers rule. Present entries must define user
+          or group.
       loop: "{{ sudo__sudoer_config }}"
       loop_control:
         label: "{{ item['name'] | default('missing name') }}"
