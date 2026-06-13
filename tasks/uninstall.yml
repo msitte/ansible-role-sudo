@@ -5,7 +5,7 @@
 
 - name: Uninstall sudo packages
   ansible.builtin.import_tasks:
-    file: _uninstall_package.yml
+    file: uninstall_package.yml
   when: sudo__manage_package | bool
   tags:
     - sudo

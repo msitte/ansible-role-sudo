@@ -5,7 +5,7 @@
 
 - name: Install sudo packages
   ansible.builtin.import_tasks:
-    file: _install_package.yml
+    file: install_package.yml
   when: sudo__manage_package | bool
   tags:
     - sudo

@@ -5,7 +5,7 @@
 
 - name: Validate sudo configuration
   ansible.builtin.import_tasks:
-    file: _validate_config.yml
+    file: validate_config.yml
   when:
     - sudo__validate_config | bool
     - not ansible_check_mode

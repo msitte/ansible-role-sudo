@@ -5,7 +5,7 @@
 
 - name: Load OS family specific sudo variables
   ansible.builtin.import_tasks:
-    file: _load_vars.yml
+    file: load_vars.yml
   tags:
     - sudo
     - sudo_vars
@@ -13,7 +13,7 @@
 
 - name: Validate sudo platform support
   ansible.builtin.import_tasks:
-    file: _assert_supported_platform.yml
+    file: assert_supported_platform.yml
   tags:
     - sudo
     - sudo_validate
@@ -21,7 +21,7 @@
 
 - name: Validate sudo role variables
   ansible.builtin.import_tasks:
-    file: _assert_role_variables.yml
+    file: assert_role_variables.yml
   tags:
     - sudo
     - sudo_validate
