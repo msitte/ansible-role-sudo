@@ -22,7 +22,6 @@ sudo__enable_logging: true
 sudo__logfile_path: /var/log/sudo.log
 
 sudo__sudoer_config: []
-
 # ComplianceAsCode:
 # - xccdf_org.ssgproject.content_rule_sudo_require_reauthentication
 sudo__timestamp_timeout: 15

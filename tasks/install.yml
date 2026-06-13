@@ -4,9 +4,27 @@
 # SPDX-License-Identifier: MIT
 
 - name: Install sudo packages
-  ansible.builtin.import_tasks:
-    file: install_package.yml
   when: sudo__manage_package | bool
   tags:
     - sudo
     - sudo_package
+  block:
+    - name: Update apt package cache for sudo
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 86400
+      when: ansible_facts['pkg_mgr'] == 'apt'
+      tags:
+        - sudo
+        - sudo_package
+        - xccdf_org.ssgproject.content_rule_package_sudo_installed
+
+    - name: Install sudo packages
+      become: true
+      ansible.builtin.package:
+        name: "{{ _sudo__packages }}"
+        state: "{{ sudo__package_state }}"
+      tags:
+        - sudo
+        - sudo_package

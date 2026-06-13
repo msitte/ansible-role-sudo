@@ -4,9 +4,16 @@
 # SPDX-License-Identifier: MIT
 
 - name: Uninstall sudo packages
-  ansible.builtin.import_tasks:
-    file: uninstall_package.yml
   when: sudo__manage_package | bool
   tags:
     - sudo
     - sudo_uninstall
+  block:
+    - name: Uninstall sudo packages
+      become: true
+      ansible.builtin.package:
+        name: "{{ _sudo__packages }}"
+        state: absent
+      tags:
+        - sudo
+        - sudo_uninstall

@@ -4,11 +4,18 @@
 # SPDX-License-Identifier: MIT
 
 - name: Validate sudo configuration
-  ansible.builtin.import_tasks:
-    file: validate_config.yml
   when:
     - sudo__validate_config | bool
     - not ansible_check_mode
   tags:
     - sudo
     - sudo_validate
+  block:
+    - name: Validate sudoers configuration
+      become: true
+      ansible.builtin.command:
+        cmd: "{{ _sudo__visudo_binary }} -c"
+      changed_when: false
+      tags:
+        - sudo
+        - sudo_validate
